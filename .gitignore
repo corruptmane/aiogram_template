@@ -1,0 +1,6 @@
+.env
+*.pem
+.idea/
+__pycache__/
+redis/
+pgdata/
