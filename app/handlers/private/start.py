@@ -6,7 +6,7 @@ from aiogram.types import ContentType, Message
 
 
 async def start_bot(msg: Message) -> NoReturn:
-    await msg.answer(f"Hello, {msg.from_user.full_name}")
+    await msg.answer(f"Hello, {msg.from_user.full_name}!")
 
 
 def setup(dispatcher: Dispatcher) -> NoReturn:

@@ -14,7 +14,7 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 #### Preparations
 
-- Clone this repo via HTTPS URL or SSH url;
+- Clone this repo via HTTPS URL or SSH URL;
     - HTTP `git clone https://github.com/vyr0d0k/aiogram_template.git`
     - SSH `git clone git@github.com:vyr0d0k/aiogram_template.git`
 - Move to the directory `cd aiogram_template`.
@@ -28,7 +28,10 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 #### Maintenance
 
-*Use `make help` to view available commands*
+*Use `make help` to view all available commands*
 
 - Reformat the code `make lint`
-- Rebuild your container `sudo docker compose up --build`
+- Stop the exist docker-container `make stop`
+- Rebuild containers and start bot (if you've edited some part of bot) `make build start`
+- Create new migration with name \<name\>(if you've edited some database tables) `make migration name=<name>`
+- Upgrade database after creating new migration `make migrate`

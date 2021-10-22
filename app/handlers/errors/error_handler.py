@@ -2,19 +2,12 @@ import logging
 from typing import NoReturn
 
 from aiogram import Dispatcher
-from aiogram.utils.exceptions import (
-    BadRequest,
-    CantDemoteChatCreator,
-    CantParseEntities,
-    InvalidQueryID,
-    MessageCantBeDeleted,
-    MessageNotModified,
-    MessageTextIsEmpty,
-    MessageToDeleteNotFound,
-    RetryAfter,
-    TelegramAPIError,
-    Unauthorized,
-)
+from aiogram.utils.exceptions import (BadRequest, CantDemoteChatCreator,
+                                      CantParseEntities, InvalidQueryID,
+                                      MessageCantBeDeleted, MessageNotModified,
+                                      MessageTextIsEmpty,
+                                      MessageToDeleteNotFound, RetryAfter,
+                                      TelegramAPIError, Unauthorized)
 
 
 async def errors_handler(update, exception) -> NoReturn:
