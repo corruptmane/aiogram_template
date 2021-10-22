@@ -2,7 +2,7 @@
 
 Scalable and straightforward template for bots written in [aiogram](https://github.com/aiogram/aiogram).
 
-___
+---
 
 ### Setting it up
 
