@@ -14,12 +14,18 @@ help:
 	@echo " downgrade			Run downgrade to -1 migration"
 	@echo " build				(Re)build your containers and (re)create services"
 	@echo " start				Start your bot in containers (use only if containers and services created)"
-	@echo " restart				Restart your bot (if you don't need to rebuild)"
-	@echo " run					Run your bot (if you don't need to rebuild)"
+	@echo " restart			Restart your bot (if you don't need to rebuild)"
+	@echo " run				Run your bot (if you don't need to rebuild)"
 	@echo " stop				Stop your bot, removing containers and networks"
 	@echo " black				Run black"
 	@echo " isort				Run isort"
 	@echo " lint				Run black and isort"
+	@echo ""
+	@echo "NOTE"
+	@echo " You can run multiple commands in one-line like:"
+	@echo "   # make down build start"
+	@echo " In this example, this command will stop -> remove -> rebuild containers and run bot"
+	@echo " Usable when you've changed code and want to see changes works"
 
 migrate:
 	PYTHONPATH=${shell pwd}:${PYTHONPATH} alembic upgrade head

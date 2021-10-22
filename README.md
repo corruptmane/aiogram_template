@@ -14,17 +14,17 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 #### Preparations
 
-- Clone this repo via HTTPS URL or SSH URL;
+- Clone this repo via HTTPS URL or SSH URL
     - HTTP `git clone https://github.com/vyr0d0k/aiogram_template.git`
     - SSH `git clone git@github.com:vyr0d0k/aiogram_template.git`
-- Move to the directory `cd aiogram_template`.
+- Move to the directory `cd aiogram_template`
 
 #### Docker Deployment
 
 - **Note:** You need to have Docker installed:
     - Arch Linux package manager: `sudo pacman -S docker`
 - Rename `.env.dist` to `.env` and replace variables to your own
-- Run command: `sudo docker compose up`
+- Run command: `make run`
 
 #### Maintenance
 
