@@ -1,6 +1,21 @@
-.env
-*.pem
-.idea/
+# Cache
 __pycache__/
-redis/
+
+# Keys/Certs/Sessions/Storages and similar
+*.pem
+*.session
+*.rdb
+
+# Environments
+.env
+*env/
+*venv/
+*ENV/
+*VENV/
+
+# IDE
+.idea/
+
+# Other
+redisdata/
 pgdata/

@@ -1,0 +1,9 @@
+# Virtual-env
+venv/
+VENV/
+
+# IDE
+.idea/
+
+# Unnecessary files
+env.example
