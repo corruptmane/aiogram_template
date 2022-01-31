@@ -4,10 +4,10 @@ import ssl
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
-from aiogram.types import AllowedUpdates, InputFile, ChatType
+from aiogram.types import AllowedUpdates, ChatType, InputFile
 from aiogram.utils.executor import start_webhook
 
-from tgbot import middlewares, filters, handlers
+from tgbot import filters, handlers, middlewares
 from tgbot.config import Config, load_config
 from tgbot.misc import set_bot_commands
 from tgbot.services import create_db_engine_and_session_pool

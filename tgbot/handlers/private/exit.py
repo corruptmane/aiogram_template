@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import ChatMemberUpdated, CallbackQuery, Message
+from aiogram.types import CallbackQuery, ChatMemberUpdated, Message
 
 from tgbot.models import User
 from tgbot.services import DatabaseContext

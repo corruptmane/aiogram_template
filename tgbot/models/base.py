@@ -1,9 +1,9 @@
 import re
-from typing import Any, Optional, cast, Type, Pattern, Final
+from typing import Any, Final, Optional, Pattern, Type, cast
 
-from sqlalchemy import inspect, Column, func
+from sqlalchemy import Column, func, inspect
 from sqlalchemy.dialects.postgresql import TIMESTAMP
-from sqlalchemy.orm import registry, declared_attr, has_inherited_table, DeclarativeMeta
+from sqlalchemy.orm import DeclarativeMeta, declared_attr, has_inherited_table, registry
 from sqlalchemy.util import ImmutableProperties
 
 mapper_registry = registry()

@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
 
-from tgbot.handlers.private import start, exit
+from tgbot.handlers.private import exit, start
 
 
 def setup(dp: Dispatcher):

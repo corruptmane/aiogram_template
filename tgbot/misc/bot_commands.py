@@ -2,7 +2,7 @@ import logging
 from typing import NoReturn
 
 from aiogram import Bot
-from aiogram.types import BotCommand, BotCommandScopeChat, BotCommandScopeAllPrivateChats
+from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
 
 from tgbot.config import Config
 

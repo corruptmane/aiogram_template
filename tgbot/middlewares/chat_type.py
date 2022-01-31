@@ -1,6 +1,6 @@
 from aiogram.dispatcher.handler import CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.types import Update, ChatType
+from aiogram.types import ChatType, Update
 
 
 class RestrictChatTypesMiddleware(BaseMiddleware):
