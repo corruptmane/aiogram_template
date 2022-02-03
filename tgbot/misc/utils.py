@@ -14,9 +14,10 @@ async def clear_last_message(data: dict, msg: Message):
 def generate_pages(array: list[Any], elements_on_page: int) -> list[list[Any]]:
     length = len(array)
     pages_quantity = (length // elements_on_page)
-    if elements_on_page == 0:
+    if length % elements_on_page != 0:
         pages_quantity += 1
-    return [array[page * elements_on_page : (page + 1) * elements_on_page] for page in range(pages_quantity)]
+    results = [array[page * elements_on_page : (page + 1) * elements_on_page] for page in range(pages_quantity)]
+    return results
 
 
 def rate_limit(limit: int, key: str | None = None):
