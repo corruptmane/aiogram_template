@@ -1,7 +1,6 @@
 from typing import NoReturn
 
 from aiogram import types
-from aiogram.dispatcher.handler import current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
 from app.models import User
@@ -27,9 +26,3 @@ class ACLMiddleware(BaseMiddleware):
 
     async def on_pre_process_callback_query(self, call: types.CallbackQuery, data: dict) -> NoReturn:
         await self.setup_chat(data, call.from_user)
-
-    @staticmethod
-    async def on_post_process_callback_query(call: types.CallbackQuery, data: dict) -> NoReturn:
-        handler = current_handler.get()
-        if not handler or not getattr(handler, 'answered_cb', False):
-            await call.answer()
