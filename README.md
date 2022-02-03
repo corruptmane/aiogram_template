@@ -15,7 +15,7 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 #### Preparations
 
 - Clone this repo via HTTPS URL or SSH URL
-    - HTTP `git clone https://github.com/corruptmane/aiogram_template.git`
+    - HTTPS `git clone https://github.com/corruptmane/aiogram_template.git`
     - SSH `git clone git@github.com:corruptmane/aiogram_template.git`
 - Move to the directory `cd aiogram_template`
 - If you want to use webhooks, you can create self-signed SSL certificate by executing `./gen_ssl` shell script. Before executing, run `chmod +x gen_ssl` to allow executing on this script
