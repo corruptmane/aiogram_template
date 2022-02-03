@@ -3,10 +3,10 @@ import logging
 from aiogram import Dispatcher
 from sqlalchemy.orm import sessionmaker
 
-from tgbot.middlewares.acl import ACLMiddleware
-from tgbot.middlewares.chat_type import RestrictChatTypesMiddleware
-from tgbot.middlewares.database import DatabaseMiddleware
-from tgbot.middlewares.throttling import ThrottlingMiddleware
+from app.middlewares.acl import ACLMiddleware
+from app.middlewares.chat_type import RestrictChatTypesMiddleware
+from app.middlewares.database import DatabaseMiddleware
+from app.middlewares.throttling import ThrottlingMiddleware
 
 log = logging.getLogger(__name__)
 

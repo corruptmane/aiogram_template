@@ -4,8 +4,8 @@ from aiogram import types
 from aiogram.dispatcher.handler import current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
-from tgbot.models import User
-from tgbot.services import DatabaseContext
+from app.models import User
+from app.services import DatabaseContext
 
 
 class ACLMiddleware(BaseMiddleware):

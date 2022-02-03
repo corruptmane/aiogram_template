@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncResult, AsyncSession, AsyncSessionTransa
 from sqlalchemy.orm import Session, joinedload, sessionmaker
 from sqlalchemy.sql.elements import BinaryExpression, ClauseElement
 
-from tgbot.models.base import BaseModel
+from app.models.base import BaseModel
 
 ASTERISK = '*'
 

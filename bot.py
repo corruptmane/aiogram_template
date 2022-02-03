@@ -7,10 +7,10 @@ from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.types import AllowedUpdates, ChatType, InputFile
 from aiogram.utils.executor import start_webhook
 
-from tgbot import filters, handlers, middlewares
-from tgbot.config import Config, load_config
-from tgbot.misc import set_bot_commands
-from tgbot.services import create_db_engine_and_session_pool
+from app import filters, handlers, middlewares
+from app.config import Config, load_config
+from app.misc import set_bot_commands
+from app.services import create_db_engine_and_session_pool
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +52,9 @@ async def main():
     )
     log.info('Starting bot...')
 
-    storage = RedisStorage2(host=config.redis.host, port=6379, password=config.redis.password if config.redis.password else None)
+    storage = RedisStorage2(
+        host=config.redis.host, port=6379, password=config.redis.password if config.redis.password else None
+    )
     bot = Bot(config.bot.token, parse_mode='HTML')
     dp = Dispatcher(bot, storage=storage)
     db_engine, sqlalchemy_session_pool = await create_db_engine_and_session_pool(config)

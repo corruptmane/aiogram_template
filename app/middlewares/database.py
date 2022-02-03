@@ -5,8 +5,8 @@ from aiogram.types.base import TelegramObject
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from tgbot.models import *
-from tgbot.services.db_ctx import DatabaseContext
+from app.models import *
+from app.services.db_ctx import DatabaseContext
 
 
 class DatabaseMiddleware(LifetimeControllerMiddleware):

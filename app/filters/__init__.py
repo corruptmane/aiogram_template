@@ -2,7 +2,7 @@ import logging
 
 from aiogram import Dispatcher
 
-from tgbot.filters.is_admin import IsAdmin
+from app.filters.is_admin import IsAdmin
 
 log = logging.getLogger(__name__)
 

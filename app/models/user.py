@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship
 
-from tgbot.models.base import TimedBaseModel
+from app.models.base import TimedBaseModel
 
 
 class User(TimedBaseModel):

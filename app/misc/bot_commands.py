@@ -4,7 +4,7 @@ from typing import NoReturn
 from aiogram import Bot
 from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
 
-from tgbot.config import Config
+from app.config import Config
 
 log = logging.getLogger(__name__)
 

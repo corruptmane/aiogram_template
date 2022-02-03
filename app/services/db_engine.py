@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from tgbot.config import Config
-from tgbot.models.base import BaseModel
+from app.config import Config
+from app.models.base import BaseModel
 
 
 async def create_db_engine_and_session_pool(config: Config) -> tuple[AsyncEngine, sessionmaker]:

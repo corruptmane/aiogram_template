@@ -2,8 +2,8 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, ChatMemberUpdated, Message
 
-from tgbot.models import User
-from tgbot.services import DatabaseContext
+from app.models import User
+from app.services import DatabaseContext
 
 
 async def unknown_action(upd: Message | CallbackQuery):

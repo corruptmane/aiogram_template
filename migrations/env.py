@@ -5,9 +5,9 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from tgbot.config import load_db_uri
-from tgbot.models import *
-from tgbot.models.base import BaseModel
+from app.config import load_db_uri
+from app.models import *
+from app.models.base import BaseModel
 
 POSTGRES_URI = load_db_uri()
 

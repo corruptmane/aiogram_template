@@ -2,7 +2,7 @@ from aiogram.dispatcher.filters import BoundFilter
 from aiogram.types import User
 from aiogram.types.base import TelegramObject
 
-from tgbot.config import Config
+from app.config import Config
 
 
 class IsAdmin(BoundFilter):

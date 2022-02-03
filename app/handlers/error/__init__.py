@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
 
-from tgbot.handlers.error import handler
+from app.handlers.error import handler
 
 
 def setup(dp: Dispatcher):

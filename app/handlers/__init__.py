@@ -2,7 +2,7 @@ import logging
 
 from aiogram import Dispatcher
 
-from tgbot.handlers import error, private
+from app.handlers import error, private
 
 log = logging.getLogger(__name__)
 
