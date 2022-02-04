@@ -30,12 +30,17 @@ def rate_limit(limit: int, key: str | None = None):
     return decorator
 
 
+def set_clocks():
+    def decorator(func):
+        setattr(func, 'clocks', True)
+        return func
+
+    return decorator
+
+
 def answered_cb():
     def decorator(func):
         setattr(func, 'answered_cb', True)
         return func
 
     return decorator
-
-
-answered = answered_cb()
