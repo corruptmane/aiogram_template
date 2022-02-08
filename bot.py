@@ -15,9 +15,7 @@ from app.services import create_db_engine_and_session_pool
 log = logging.getLogger(__name__)
 
 
-async def webhook_startup(**kwargs):
-    dp: Dispatcher = kwargs.get('dp')
-    allowed_updates: list[str] = kwargs.get('allowed_updates')
+async def webhook_startup(dp: Dispatcher, allowed_updates: list[str], **kwargs):
     config: Config = kwargs.get('config')
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     ssl_context.load_cert_chain('./webhook_cert.pem', './webhook_pkey.pem')
@@ -35,9 +33,7 @@ async def webhook_shutdown(dp: Dispatcher):
     await dp.bot.delete_webhook(True)
 
 
-async def polling_startup(**kwargs):
-    dp: Dispatcher = kwargs.get('dp')
-    allowed_updates: list[str] = kwargs.get('allowed_updates')
+async def polling_startup(dp: Dispatcher, allowed_updates: list[str], **kwargs):
     await dp.start_polling(allowed_updates=allowed_updates)
 
 
@@ -72,7 +68,7 @@ async def main():
     await set_bot_commands(bot, config)
 
     try:
-        await startup(dp=dp, allowed_updates=allowed_updates, config=config)
+        await startup(dp, allowed_updates, config=config)
     finally:
         await shutdown(dp)
         await storage.close()
