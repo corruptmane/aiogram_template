@@ -45,7 +45,8 @@ class BaseModel(metaclass=DeclarativeMeta):
     def __repr__(self) -> str:
         table_attrs = cast(ImmutableProperties, inspect(self).attrs)
         primary_keys = ' '.join(
-            f'{key.name}={table_attrs[key.name].value}' for key in inspect(self.__class__.__qualname__).primary_key
+            f'{key.name}={table_attrs[key.name].value}'
+            for key in inspect(self.__class__).primary_key
         )
         return f'{self.__class__.__qualname__}->{primary_keys}'
 
