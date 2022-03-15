@@ -1,4 +1,4 @@
-### [![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.18-blue)](https://pypi.org/project/aiogram/)
+### [![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.19-blue)](https://pypi.org/project/aiogram/)
 
 Scalable and straightforward template for bots written in [aiogram](https://github.com/aiogram/aiogram).
 
