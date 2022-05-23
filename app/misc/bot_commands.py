@@ -1,5 +1,4 @@
 import logging
-from typing import NoReturn
 
 from aiogram import Bot
 from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
@@ -9,7 +8,7 @@ from app.config import Config
 log = logging.getLogger(__name__)
 
 
-async def set_bot_commands(bot: Bot, config: Config) -> NoReturn:
+async def set_bot_commands(bot: Bot, config: Config) -> None:
     default_commands = {
         'en': [
             BotCommand('start', '[Re]Start Bot'),
@@ -23,7 +22,7 @@ async def set_bot_commands(bot: Bot, config: Config) -> NoReturn:
     log.info('Bot commands configured successfully')
 
 
-async def set_private_chat_commands(bot: Bot, default_commands: dict[str, list[BotCommand]]) -> NoReturn:
+async def set_private_chat_commands(bot: Bot, default_commands: dict[str, list[BotCommand]]) -> None:
     for lang, commands in default_commands.items():
         await bot.set_my_commands(commands, BotCommandScopeAllPrivateChats(), lang)
     await bot.set_my_commands(default_commands['en'], BotCommandScopeAllPrivateChats())
@@ -31,7 +30,7 @@ async def set_private_chat_commands(bot: Bot, default_commands: dict[str, list[B
 
 async def set_admin_commands(
         bot: Bot, admin_ids: tuple[int, ...], default_commands: dict[str, list[BotCommand]]
-) -> NoReturn:
+) -> None:
     lang_commands = {
         'en': [
             *default_commands['en'],

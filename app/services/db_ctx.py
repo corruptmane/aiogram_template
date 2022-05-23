@@ -1,12 +1,10 @@
-import contextlib
-import enum
-import sys
-from typing import Any, Callable, Generic, Iterable, Optional, Sequence, Type, TypeVar, Union, cast
+from contextlib import asynccontextmanager
+from typing import TypeVar, cast, Any, Sequence, Callable, AsyncGenerator, Generic
 
-from sqlalchemy import delete, exists, func, select, update
+from sqlalchemy import delete, exists, func, select, update, lambda_stmt
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.ext.asyncio import AsyncResult, AsyncSession, AsyncSessionTransaction
-from sqlalchemy.orm import Session, joinedload, sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker, Session, lazyload
 from sqlalchemy.sql.elements import BinaryExpression, ClauseElement
 
 from app.models.base import BaseModel
@@ -14,132 +12,96 @@ from app.models.base import BaseModel
 ASTERISK = '*'
 
 SQLAlchemyModel = TypeVar('SQLAlchemyModel', bound=BaseModel)
-ExpressionType = Union[BinaryExpression, ClauseElement, bool]
+ExpressionType = BinaryExpression | ClauseElement | bool
 
 
-class TransactionStrategy(enum.Enum):
-    ONE_PER_REQUEST = 1
-    KEEP_ALIVE = 2
+class BaseRepo(Generic[SQLAlchemyModel]):
+    model: SQLAlchemyModel
 
-
-DEFAULT_STRATEGY = TransactionStrategy.ONE_PER_REQUEST
-
-
-class Transaction:
-    def __init__(self, session: AsyncSession, strategy: TransactionStrategy):
-        self._session = session
-        self._strategy = strategy
-        self._current_txn: Optional[AsyncSessionTransaction] = None
-
-    async def __aenter__(self) -> AsyncSessionTransaction:
-        if self._current_txn is not None and self._strategy == TransactionStrategy.KEEP_ALIVE:
-            return self._current_txn
-        self._current_txn = self._session.begin()
-        await self._current_txn.start()
-        return self._current_txn
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        if exc_type is not None or exc_val is not None or exc_tb is not None:
-            return await self._current_txn.__aexit__(exc_type, exc_val, exc_tb)
-        if self._strategy == TransactionStrategy.KEEP_ALIVE:
-            return
-        await self._current_txn.__aexit__(exc_type, exc_val, exc_tb)
-
-    async def close(self) -> None:
-        await self._current_txn.__aexit__(None, None, None)
-
-    def change_strategy(self, new_strategy: TransactionStrategy) -> None:
-        self._strategy = new_strategy
-
-
-class DatabaseContext(Generic[SQLAlchemyModel]):
-    def __init__(
-            self,
-            session_or_pool: Union[sessionmaker, AsyncSession],
-            *,
-            query_model: Type[SQLAlchemyModel]
-    ) -> None:
+    def __init__(self, session_or_pool: sessionmaker | AsyncSession) -> None:
         if isinstance(session_or_pool, sessionmaker):
             self._session: AsyncSession = cast(AsyncSession, session_or_pool())
         else:
             self._session = session_or_pool
-        self.model = query_model
-        self._transaction = Transaction(self._session, DEFAULT_STRATEGY)
 
-    async def add(self, **values: Any) -> Optional[SQLAlchemyModel]:
-        async with self._transaction:
-            stmt = insert(self.model).values(
-                **values
-            ).returning(ASTERISK)
-            result = await self._session.execute(stmt)
-        return result.scalars().first()
+    async def add(self, **values: Any) -> SQLAlchemyModel | None:
+        model = self.model
+        insert_stmt = insert(model).values(**values).on_conflict_do_nothing().returning(ASTERISK)
+        stmt = select(model).from_statement(insert_stmt)
+        async with self._transaction():
+            result = (await self._session.execute(stmt)).scalars().first()
+        return cast(SQLAlchemyModel | None, result)
 
     async def add_many(self, *models: SQLAlchemyModel) -> None:
-        async with self._transaction:
+        async with self._transaction():
             bulk_save_func = make_proxy_bulk_save_func(instances=models)
             await self._session.run_sync(bulk_save_func)
 
-    async def get_all(self, *clauses: ExpressionType, load: Optional[Any] = None) -> list[SQLAlchemyModel]:
-        stmt = select(self.model).where(*clauses)
-        if load:
-            if isinstance(load, Iterable):
-                for query in load:
-                    stmt = stmt.options(joinedload(query))
-            else:
-                stmt = stmt.options(joinedload(load))
-        async with self._transaction:
-            result: AsyncResult = await self._session.execute(stmt)
-            scalars = result.scalars().unique().all()
-        return cast(list[SQLAlchemyModel], scalars)
+    async def get_one(self, *clauses: ExpressionType) -> SQLAlchemyModel | None:
+        model = self.model
+        stmt = lambda_stmt(lambda: select(model))
+        stmt += lambda s: s.where(*clauses)
+        stmt += lambda s: s.options(lazyload('*'))
+        async with self._transaction():
+            result = (await self._session.execute(stmt)).scalars().first()
+        return cast(SQLAlchemyModel | None, result)
 
-    async def get_one(self, *clauses: ExpressionType, load: Optional[Any] = None) -> Optional[SQLAlchemyModel]:
-        stmt = select(self.model).where(*clauses)
-        if load:
-            if isinstance(load, Iterable):
-                for query in load:
-                    stmt = stmt.options(joinedload(query))
-            else:
-                stmt = stmt.options(joinedload(load))
-        async with self._transaction:
-            result: AsyncResult = await self._session.execute(stmt)
-            first_scalar_result = result.scalars().first()
-        return first_scalar_result
+    async def get_random(self, *clauses: ExpressionType) -> SQLAlchemyModel | None:
+        model = self.model
+        stmt = lambda_stmt(lambda: select(model))
+        stmt += lambda s: s.where(*clauses)
+        stmt += lambda s: s.order_by(func.random())
+        stmt += lambda s: s.limit(1)
+        stmt += lambda s: s.options(lazyload('*'))
+        async with self._transaction():
+            result = (await self._session.execute(stmt)).scalars().first()
+        return cast(SQLAlchemyModel | None, result)
 
-    async def update(self, *clauses: ExpressionType, **values: Any) -> list[SQLAlchemyModel]:
-        async with self._transaction:
-            stmt = update(self.model).where(*clauses).values(**values).returning(ASTERISK)
+    async def get_all(self, *clauses: ExpressionType) -> list[SQLAlchemyModel] | None:
+        model = self.model
+        stmt = lambda_stmt(lambda: select(model))
+        stmt += lambda s: s.where(*clauses)
+        stmt += lambda s: s.options(lazyload('*'))
+        async with self._transaction():
+            results = (await self._session.execute(stmt)).scalars().all()
+        return cast(list[SQLAlchemyModel] | None, results)
+
+    async def update(self, *clauses: ExpressionType, **values: Any) -> None:
+        stmt = update(self.model).where(*clauses).values(**values).returning(None)
+        async with self._transaction():
+            await self._session.execute(stmt)
+        return None
+
+    async def delete(self, *clauses: ExpressionType, returning: Any = ASTERISK) -> list[SQLAlchemyModel] | None:
+        stmt = delete(self.model).where(*clauses).returning(returning)
+        async with self._transaction():
             result = (await self._session.execute(stmt)).scalars().all()
-        return cast(list[SQLAlchemyModel], result)
+        return cast(list[SQLAlchemyModel] | None, result)
+
+    async def count(self, *clauses: ExpressionType) -> int:
+        stmt = lambda_stmt(lambda: select(func.count(ASTERISK)))
+        if clauses:
+            stmt += lambda s: s.where(*clauses)
+        else:
+            model = self.model
+            stmt += lambda s: s.select_from(model)
+        async with self._transaction():
+            result = (await self._session.execute(stmt)).scalar()
+        return cast(int, result)
 
     async def exists(self, *clauses: ExpressionType) -> bool:
-        async with self._transaction:
-            stmt = exists(self.model).where(*clauses).select()
+        stmt = exists(select(self.model)).where(*clauses).select()
+        async with self._transaction():
             result = (await self._session.execute(stmt)).scalar()
         return cast(bool, result)
 
-    async def delete(self, *clauses: ExpressionType) -> list[SQLAlchemyModel]:
-        async with self._transaction:
-            stmt = delete(self.model).where(*clauses).returning(ASTERISK)
-            result = (await self._session.execute(stmt)).scalars().all()
-        return cast(list[SQLAlchemyModel], result)
-
-    async def count(self, *clauses: ExpressionType) -> int:
-        async with self._transaction:
-            stmt = select(func.count(ASTERISK)).select_from(self.model).where(*clauses)
-            result: AsyncResult = await self._session.execute(stmt)
-        return cast(int, result.scalar())
-
-    @contextlib.asynccontextmanager
-    async def transaction(self) -> AsyncSessionTransaction:
-        self._transaction.change_strategy(TransactionStrategy.KEEP_ALIVE)
-        try:
-            yield await self._transaction.__aenter__()
-        except Exception as ex:
-            await self._transaction.__aexit__(*sys.exc_info())
-            raise ex
-        finally:
-            await self._transaction.close()
-            self._transaction.change_strategy(DEFAULT_STRATEGY)
+    @asynccontextmanager
+    async def _transaction(self) -> AsyncGenerator:
+        if not self._session.in_transaction() and self._session.is_active:
+            async with self._session.begin() as transaction:
+                yield transaction
+        else:
+            yield
 
 
 def make_proxy_bulk_save_func(

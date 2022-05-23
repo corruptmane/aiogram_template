@@ -1,12 +1,12 @@
 from aiogram.dispatcher.filters import BoundFilter
-from aiogram.types import User
-from aiogram.types.base import TelegramObject
+from aiogram.dispatcher.handler import ctx_data
+from aiogram.types import Message, CallbackQuery
 
 from app.config import Config
 
 
 class IsAdmin(BoundFilter):
-    async def check(self, obj: TelegramObject, *args) -> bool:
-        config: Config = obj.bot.get('config')
-        user = User.get_current()
-        return user.id in config.bot.admin_ids
+    async def check(self, upd: Message | CallbackQuery, *args) -> bool:
+        data = ctx_data.get()
+        config: Config = data['config']
+        return upd.from_user.id in config.bot.admin_ids

@@ -1,26 +1,31 @@
+import logging
 from contextlib import suppress
-from typing import Any
+from typing import TypeVar
 
 from aiogram.types import Message
-from aiogram.utils.exceptions import MessageError
+
+log = logging.getLogger(__name__)
 
 
 async def clear_last_message(data: dict, msg: Message):
     msg_id = int(data.get('msg_id'))
-    with suppress(MessageError):
+    with suppress(Exception):
         await msg.bot.delete_message(msg.from_user.id, msg_id)
 
 
-def generate_pages(array: list[Any], elements_on_page: int) -> list[list[Any]]:
-    length = len(array)
-    pages_quantity = (length // elements_on_page)
-    if length % elements_on_page != 0:
+Element = TypeVar('Element')
+
+
+def generate_pages(array: list[Element], elements_on_page: int) -> list[list[Element]]:
+    elements_quantity = len(array)
+    pages_quantity = (elements_quantity // elements_on_page)
+    if elements_quantity % elements_on_page != 0:
         pages_quantity += 1
-    results = [array[page * elements_on_page : (page + 1) * elements_on_page] for page in range(pages_quantity)]
+    results = [array[page * elements_on_page: (page + 1) * elements_on_page] for page in range(pages_quantity)]
     return results
 
 
-def rate_limit(limit: int, key: str | None = None):
+def set_rate_limit(limit: int, key: str | None = None):
     def decorator(func):
         setattr(func, 'throttling_rate_limit', limit)
         if key:
@@ -38,9 +43,18 @@ def set_clocks():
     return decorator
 
 
-def answered_cb():
+def set_answered():
     def decorator(func):
-        setattr(func, 'answered_cb', True)
+        setattr(func, 'is_answered', True)
         return func
 
     return decorator
+
+
+__all__ = (
+    'clear_last_message',
+    'generate_pages',
+    'set_rate_limit',
+    'set_clocks',
+    'set_answered',
+)

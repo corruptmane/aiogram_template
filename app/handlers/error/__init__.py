@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 
-from app.handlers.error import handler
+from app.handlers.error import all
 
 
 def setup(dp: Dispatcher):
-    handler.setup(dp)
+    all.setup(dp)

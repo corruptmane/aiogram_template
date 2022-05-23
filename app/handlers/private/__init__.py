@@ -1,8 +1,8 @@
 from aiogram import Dispatcher
 
-from app.handlers.private import exit, start
+from app.handlers.private import start, last
 
 
 def setup(dp: Dispatcher):
     start.setup(dp)
-    exit.setup(dp)
+    last.setup(dp)

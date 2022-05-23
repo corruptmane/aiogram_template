@@ -4,11 +4,11 @@ import ssl
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
-from aiogram.types import AllowedUpdates, ChatType, InputFile
+from aiogram.types import AllowedUpdates, InputFile
 from aiogram.utils.executor import start_webhook
 
 from app import filters, handlers, middlewares
-from app.config import Config, load_config
+from app.config import Config
 from app.misc import set_bot_commands
 from app.services import create_db_engine_and_session_pool
 
@@ -41,27 +41,30 @@ async def polling_shutdown(dp: Dispatcher): pass
 
 
 async def main():
-    config: Config = load_config()
+    config = Config.from_env()
     logging.basicConfig(
         level=config.misc.log_level,
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     log.info('Starting bot...')
 
+    loop = asyncio.get_event_loop()
     storage = RedisStorage2(
-        host=config.redis.host, port=6379, password=config.redis.password if config.redis.password else None
+        host=config.redis.host, port=6379, password=config.redis.password, loop=loop
     )
-    bot = Bot(config.bot.token, parse_mode='HTML')
+    bot = Bot(config.bot.token, loop, parse_mode='HTML')
     dp = Dispatcher(bot, storage=storage)
     db_engine, sqlalchemy_session_pool = await create_db_engine_and_session_pool(config)
 
     startup = webhook_startup if config.bot.is_webhook else polling_startup
     shutdown = webhook_shutdown if config.bot.is_webhook else polling_shutdown
     allowed_updates: list[str] = AllowedUpdates.MESSAGE + AllowedUpdates.CALLBACK_QUERY + AllowedUpdates.MY_CHAT_MEMBER
+    environments = dict(config=config, session_pool=sqlalchemy_session_pool, loop=loop)
 
-    bot['config'] = config
-
-    middlewares.setup(dp, ChatType.PRIVATE, sqlalchemy_session_pool, .3)
+    middlewares.setup(
+        dp, True if config.misc.log_level == logging.DEBUG else False,
+        config.bot.admin_ids, sqlalchemy_session_pool, .3, environments
+    )
     filters.setup(dp)
     handlers.setup(dp)
 
@@ -73,8 +76,7 @@ async def main():
         await shutdown(dp)
         await storage.close()
         await storage.wait_closed()
-        bot_session = await dp.bot.get_session()
-        await bot_session.close()
+        await (await bot.get_session()).close()
         await db_engine.dispose()
 
 

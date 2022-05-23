@@ -1,4 +1,4 @@
-### [![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.19-blue)](https://pypi.org/project/aiogram/)
+### [![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.20-blue)](https://pypi.org/project/aiogram/)
 
 Scalable and straightforward template for bots written in [aiogram](https://github.com/aiogram/aiogram).
 
@@ -9,7 +9,6 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 #### System dependencies
 
 - Python 3.10
-- GNU/Make
 - Git
 
 #### Preparations
@@ -30,11 +29,5 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 #### Maintenance
 
-*Use `make help` to view all available Make commands*
-
-- Reformat the code `make lint`
 - Stop the exist docker-container `docker-compose down`
 - Rebuild containers and start bot (if you've edited some part of bot) `docker-compose up`
-- Create new migration with name \<name\>(if you've edited some database tables) `make migration name=<name>`
-- Upgrade database after creating new migration `make migrate`
-- Downgrade database to 1 migration back `make downgrade`
