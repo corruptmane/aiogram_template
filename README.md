@@ -1,4 +1,4 @@
-### [![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.20-blue)](https://pypi.org/project/aiogram/)
+[![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.20-blue)](https://pypi.org/project/aiogram/)
 
 Scalable and straightforward template for bots written in [aiogram](https://github.com/aiogram/aiogram).
 
@@ -21,8 +21,9 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 4. Rename `env.example` to `.env` and replace variables to your own
 
 #### Regular Deployment
+
 1. Create a virtual environment: `python -m venv venv`
-2. Activate virtual environment:
+2. Activate a virtual environment:
     - You use sh or zsh: `source ./venv/bin/activate` or `. ./venv/bin/activate`
     - You use fish: `source ./venv/bin/activate.fish` or `. ./venv/bin/activate.fish`
     - You use csh: `source ./venv/bin/activate.csh` or `. ./venv/bin/activate.csh`
