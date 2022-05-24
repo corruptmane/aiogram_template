@@ -1,4 +1,4 @@
-### [![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.20-blue)](https://pypi.org/project/aiogram/)
+[![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.20-blue)](https://pypi.org/project/aiogram/)
 
 Scalable and straightforward template for bots written in [aiogram](https://github.com/aiogram/aiogram).
 
@@ -36,8 +36,7 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 1. **Note:** You need to have Docker and Docker Compose installed:
     - Arch-based distro: `sudo pacman -S docker docker-compose`
     - Debian-based distro: `sudo apt install docker docker-compose`
-2. Rename `env.example` to `.env` and replace variables to your own
-3. Run command: `docker-compose up`
+2. Run command: `docker-compose up`
 
 #### Maintenance
 
