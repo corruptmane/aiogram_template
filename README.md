@@ -13,28 +13,28 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 #### Preparations
 
-- Clone this repo via HTTPS URL or SSH URL
+1. Clone this repo via:
     - HTTPS `git clone https://github.com/corruptmane/aiogram_template.git`
     - SSH `git clone git@github.com:corruptmane/aiogram_template.git`
-- Move to the directory `cd aiogram_template`
-- If you want to use webhooks, you can create self-signed SSL certificate by executing `./gen_ssl` shell script. Before executing, run `chmod +x gen_ssl` to allow executing on this script
+2. Move to the directory `cd aiogram_template`
+3. If you want to use webhooks, you can create self-signed SSL certificate by executing `./gen_ssl` shell script. Before executing, run `chmod +x gen_ssl` to allow executing on this script
+4. Rename `env.example` to `.env` and replace variables to your own
 
 #### Regular Deployment
-- Create a virtual environment: `python -m venv venv`
-- Activate virtual environment:
-    - If you use sh or zsh: `source ./venv/bin/activate` or `. ./venv/bin/activate`
-    - If you use fish: `source ./venv/bin/activate.fish` or `. ./venv/bin/activate.fish`
-    - If you use csh: `source ./venv/bin/activate.csh` or `. ./venv/bin/activate.csh`
-- Install requirements: `pip install -r requirements.txt`
-- Run your bot: `python -O bot.py`
+1. Create a virtual environment: `python -m venv venv`
+2. Activate virtual environment:
+    - You use sh or zsh: `source ./venv/bin/activate` or `. ./venv/bin/activate`
+    - You use fish: `source ./venv/bin/activate.fish` or `. ./venv/bin/activate.fish`
+    - You use csh: `source ./venv/bin/activate.csh` or `. ./venv/bin/activate.csh`
+3. Install requirements: `pip install -r requirements.txt`
+4. Run your bot: `python -O bot.py`
 
 #### Docker Deployment
 
-- **Note:** You need to have Docker and Docker Compose installed:
+1. **Note:** You need to have Docker and Docker Compose installed:
     - Arch-based distro: `sudo pacman -S docker docker-compose`
     - Debian-based distro: `sudo apt install docker docker-compose`
-- Rename `env.example` to `.env` and replace variables to your own
-- Run command: `docker-compose up`
+2. Run command: `docker-compose up`
 
 #### Maintenance
 
