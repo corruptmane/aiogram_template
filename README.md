@@ -19,6 +19,15 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 - Move to the directory `cd aiogram_template`
 - If you want to use webhooks, you can create self-signed SSL certificate by executing `./gen_ssl` shell script. Before executing, run `chmod +x gen_ssl` to allow executing on this script
 
+#### Regular Deployment
+- Create a virtual environment: `python -m venv venv`
+- Activate virtual environment:
+    - If you use sh or zsh: `source ./venv/bin/activate` or `. ./venv/bin/activate`
+    - If you use fish: `source ./venv/bin/activate.fish` or `. ./venv/bin/activate.fish`
+    - If you use csh: `source ./venv/bin/activate.csh` or `. ./venv/bin/activate.csh`
+- Install requirements: `pip install -r requirements.txt`
+- Run your bot: `python -O bot.py`
+
 #### Docker Deployment
 
 - **Note:** You need to have Docker and Docker Compose installed:
@@ -29,5 +38,5 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 #### Maintenance
 
-- Stop the exist docker-container `docker-compose down`
-- Rebuild containers and start bot (if you've edited some part of bot) `docker-compose up`
+- Stop the exist docker-container `docker-compose down -v --remove-orphans --rmi local`
+- Rebuild containers and start bot (if you've edited some part of bot) `docker-compose up --build`
