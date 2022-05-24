@@ -85,15 +85,3 @@ class Config:
             )
         )
 
-
-def load_db_uri(path: str | None = None) -> str:
-    env = Env()
-    env.read_env(path)
-
-    db = DbConfig(
-        host=env.str('DB_HOST', 'localhost'),
-        user=env.str('DB_USER', 'postgres'),
-        password=env.str('DB_PASS', 'postgres'),
-        database=env.str('DB_NAME', 'postgres'),
-    )
-    return db.sqlalchemy_url
