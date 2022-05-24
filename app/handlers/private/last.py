@@ -16,7 +16,7 @@ async def my_chat_member_updated(member: ChatMemberUpdated, state: FSMContext, u
         await state.finish()
 
 
-def setup(dp: Dispatcher):
+def setup(dp: Dispatcher) -> None:
     dp.register_my_chat_member_handler(my_chat_member_updated, state='*')
     dp.register_message_handler(unknown_action, state='*')
     dp.register_callback_query_handler(unknown_action, state='*')

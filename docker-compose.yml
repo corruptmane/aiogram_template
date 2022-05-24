@@ -6,29 +6,27 @@ services:
     build:
       context: .
     stop_signal: SIGINT
-    command: python bot.py
-    restart: always
+    command: python -O bot.py
+    restart: unless-stopped
     ports:
-      - "8443:8443"
+      - "127.0.0.1:8443:8443"
     env_file:
       - ".env"
     environment:
-      DB_HOST: "${BOT_NAME}-database"
-      REDIS_HOST: "${BOT_NAME}-redis"
+      DB_HOST: database
+      REDIS_HOST: redis
     volumes:
       - .:/src
     depends_on:
       - database
       - redis
-    networks:
-      - botnet
 
   database:
     container_name: "${BOT_NAME}-database"
-    image: postgres:13-alpine
-    expose:
-      - 5432
-    restart: always
+    image: postgres:14-alpine
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     command: "postgres -c max_connections=150 -c shared_buffers=512MB -c effective_cache_size=1536MB
@@ -47,23 +45,14 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
-    networks:
-      - botnet
 
   redis:
     container_name: "${BOT_NAME}-redis"
-    image: redis:alpine
+    image: redis:7-alpine
     env_file:
       - ".env"
-    expose:
-      - 6379
-    command: redis-server --requirepass $REDIS_PASS
+    ports:
+      - "127.0.0.1:6379:6379"
     volumes:
       - ./redisdata:/var/lib/redis
-    restart: always
-    networks:
-      - botnet
-
-networks:
-  botnet:
-    driver: bridge
+    restart: unless-stopped

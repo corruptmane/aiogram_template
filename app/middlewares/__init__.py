@@ -14,9 +14,8 @@ log = logging.getLogger(__name__)
 
 
 def setup(
-        dp: Dispatcher, is_admin_mode: bool, admin_ids: tuple[int], session_pool: sessionmaker,
-        rate_limit: float, environments: dict[str: Any]
-):
+        dp: Dispatcher, session_pool: sessionmaker, rate_limit: float, environments: dict[str: Any]
+) -> None:
     dp.setup_middleware(EnvironmentMiddleware(environments))
     dp.setup_middleware(DatabaseMiddleware(session_pool))
     dp.setup_middleware(ThrottlingMiddleware(rate_limit))

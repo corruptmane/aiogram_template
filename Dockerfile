@@ -1,11 +1,10 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-buster
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /src
-ENV PYTHONPATH "${PYTHONPATH}:/src/"
 
 COPY . /src
-RUN python -m pip install -U pip && python -m pip install -r requirements.txt
-RUN chmod +x /src/docker-entrypoint.sh
 
-ENTRYPOINT ["sh", "/src/docker-entrypoint.sh"]
-
+RUN python -m pip install --upgrade pip && python -m pip install --requirement requirements.txt

@@ -49,5 +49,5 @@ async def errors_handler(update: Update, exception):
     log.exception(f'Update: {update} \n{exception}')
 
 
-def setup(dp: Dispatcher):
+def setup(dp: Dispatcher) -> None:
     dp.register_errors_handler(errors_handler)

@@ -8,7 +8,6 @@ from sqlalchemy.engine import URL
 @dataclass
 class DbConfig:
     host: str
-    port: int
     user: str
     password: str
     database: str
@@ -20,7 +19,7 @@ class DbConfig:
             username=self.user,
             password=self.password,
             host=self.host,
-            port=self.port,
+            port=5432,
             database=self.database
         )
 
@@ -28,7 +27,6 @@ class DbConfig:
 @dataclass
 class RedisConfig:
     host: str
-    port: int
 
 
 @dataclass
@@ -75,17 +73,15 @@ class Config:
             bot=TgBot(**tgbot_config),
             db=DbConfig(
                 host=env.str('DB_HOST', 'postgres'),
-                port=env.int('DB_PORT', 5432),
                 user=env.str('DB_USER', 'postgres'),
                 password=env.str('DB_PASSWORD', 'postgres'),
                 database=env.str('DB_DATABASE', 'postgres'),
             ),
             redis=RedisConfig(
                 host=env.str('REDIS_HOST', 'localhost'),
-                port=env.int('REDIS_PORT', 6379),
             ),
             misc=Miscellaneous(
-                log_level=env.int('LOG_LEVEL', logging.INFO),
+                log_level=env.log_level('LOG_LEVEL', logging.INFO),
             )
         )
 
@@ -96,7 +92,6 @@ def load_db_uri(path: str | None = None) -> str:
 
     db = DbConfig(
         host=env.str('DB_HOST', 'localhost'),
-        port=env.int('DB_PORT', 5432),
         user=env.str('DB_USER', 'postgres'),
         password=env.str('DB_PASS', 'postgres'),
         database=env.str('DB_NAME', 'postgres'),

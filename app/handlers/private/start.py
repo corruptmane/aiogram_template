@@ -17,6 +17,6 @@ async def start_cmd(msg: Message, state: FSMContext):
     await state.finish()
 
 
-def setup(dp: Dispatcher):
+def setup(dp: Dispatcher) -> None:
     dp.register_message_handler(ref_start_cmd, CommandStart(REF_REGEXP), state='*')
     dp.register_message_handler(start_cmd, CommandStart(), state='*')
