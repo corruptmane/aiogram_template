@@ -6,7 +6,6 @@ services:
     build:
       context: .
     stop_signal: SIGINT
-    command: python -O bot.py
     restart: unless-stopped
     ports:
       - "127.0.0.1:8443:8443"

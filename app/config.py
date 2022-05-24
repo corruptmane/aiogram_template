@@ -96,4 +96,4 @@ def load_db_uri(path: str | None = None) -> str:
         password=env.str('DB_PASS', 'postgres'),
         database=env.str('DB_NAME', 'postgres'),
     )
-    return db.sqlalchemy_url
+    return str(db.sqlalchemy_url)
