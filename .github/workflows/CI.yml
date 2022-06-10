@@ -9,9 +9,11 @@ on:
   push:
     branches:
       - main
+      - with_migrations
   pull_request:
     branches:
       - main
+      - with_migrations
   workflow_dispatch:
 
 jobs:
