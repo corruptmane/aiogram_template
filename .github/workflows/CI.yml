@@ -1,0 +1,39 @@
+name: CI-Pipeline-to-AWS-S3
+
+env:
+  AWS_BUCKET_NAME: "gh-actions-cicd"
+  AWS_REGION_NAME: "eu-central-1"
+  PACKAGE_NAME: "aiogram_template_${{ github.sha }}.zip"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Clone repo
+      uses: actions/checkout@v3
+
+    - name: Create ZIP package
+      run: zip -r ${{ env.PACKAGE_NAME }} ./ -x *.git*
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION_NAME }}
+
+    - name: Copy package to S3 Bucket
+      run: aws s3 cp ${{ env.PACKAGE_NAME }} s3://${{ env.AWS_BUCKET_NAME }}/
+
+    - name: Print finish message
+      run: echo "CI Part Finished Successfully"
