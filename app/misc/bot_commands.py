@@ -9,39 +9,29 @@ log = logging.getLogger(__name__)
 
 
 async def set_bot_commands(bot: Bot, config: Config) -> None:
-    default_commands = {
-        'en': [
-            BotCommand('start', '[Re]Start Bot'),
-        ],
-        'ru': [
-            BotCommand('start', '[Ре]Старт Бота'),
-        ]
-    }
-    await set_private_chat_commands(bot, default_commands)
+    default_commands = [
+        BotCommand('start', 'Restart Bot')
+    ]
+    await set_default_private_chat_commands(bot, default_commands)
     await set_admin_commands(bot, config.bot.admin_ids, default_commands)
     log.info('Bot commands configured successfully')
 
 
-async def set_private_chat_commands(bot: Bot, default_commands: dict[str, list[BotCommand]]) -> None:
-    for lang, commands in default_commands.items():
-        await bot.set_my_commands(commands, BotCommandScopeAllPrivateChats(), lang)
-    await bot.set_my_commands(default_commands['en'], BotCommandScopeAllPrivateChats())
+async def set_commands_by_chat_ids(bot: Bot, chat_ids: list[int], commands: list[BotCommand]) -> None:
+    for chat_id in chat_ids:
+        try:
+            await bot.set_my_commands(commands, BotCommandScopeChat(chat_id))
+        except Exception as e:
+            log.error(e)
 
 
-async def set_admin_commands(
-        bot: Bot, admin_ids: tuple[int, ...], default_commands: dict[str, list[BotCommand]]
-) -> None:
-    lang_commands = {
-        'en': [
-            *default_commands['en'],
-            BotCommand('admin', 'Enter admin panel'),
-        ],
-        'ru': [
-            *default_commands['ru'],
-            BotCommand('admin', 'Войти в админ-панель')
-        ]
-    }
-    for admin_id in admin_ids:
-        for lang, commands in lang_commands.items():
-            await bot.set_my_commands(commands, BotCommandScopeChat(admin_id), lang)
-        await bot.set_my_commands(lang_commands['en'], BotCommandScopeChat(admin_id))
+async def set_default_private_chat_commands(bot: Bot, commands: list[BotCommand]) -> None:
+    await bot.set_my_commands(commands, BotCommandScopeAllPrivateChats())
+
+
+async def set_admin_commands(bot: Bot, admin_ids: tuple[int, ...], default_commands: list[BotCommand]) -> None:
+    admin_commands = [
+        *default_commands,
+        BotCommand('admin', 'Enter admin panel')
+    ]
+    await set_commands_by_chat_ids(bot, list(admin_ids), admin_commands)

@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 async def clear_last_message(data: dict, msg: Message):
-    msg_id = int(data.get('msg_id'))
+    msg_id = int(data.get('last_msg_id'))
     with suppress(Exception):
         await msg.bot.delete_message(msg.from_user.id, msg_id)
 
