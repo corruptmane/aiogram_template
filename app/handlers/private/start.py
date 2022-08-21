@@ -3,20 +3,16 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandStart
 from aiogram.types import Message
 
-from app.misc.regex import REF_REGEXP
+from app.config import Config
 
 
-async def ref_start_cmd(msg: Message, state: FSMContext):
-    args = msg.get_args()
-    await msg.answer(f'Hello, it\'s your args: {args}')
+async def start_cmd(msg: Message, state: FSMContext, config: Config):
+    # Here, we got `config` with help of `app.middlewares.environment.EnvironmentMiddleware`
+    admin_ids = '\n'.join(map(str, config.bot.admin_ids))
+    await msg.answer(f'Hello, admin ids are:\n\n{admin_ids}')
     await state.finish()
-
-
-async def start_cmd(msg: Message, state: FSMContext):
-    await msg.answer('Hello')
-    await state.finish()
+    a = 1 / 0
 
 
 def setup(dp: Dispatcher) -> None:
-    dp.register_message_handler(ref_start_cmd, CommandStart(REF_REGEXP), state='*')
     dp.register_message_handler(start_cmd, CommandStart(), state='*')

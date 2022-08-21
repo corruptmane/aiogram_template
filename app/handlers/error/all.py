@@ -1,5 +1,6 @@
 import logging
 
+import sentry_sdk
 from aiogram import Dispatcher
 from aiogram.types import Update
 from aiogram.utils.exceptions import (
@@ -46,7 +47,9 @@ async def errors_handler(update: Update, exception):
         log.exception(f'TelegramAPIError: {exception} \nUpdate: {update}')
         return True
 
+    sentry_sdk.capture_exception(exception)
     log.exception(f'Update: {update} \n{exception}')
+    return True
 
 
 def setup(dp: Dispatcher) -> None:
