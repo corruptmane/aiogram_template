@@ -8,6 +8,7 @@ from sqlalchemy.engine import URL
 @dataclass
 class DbConfig:
     host: str
+    port: int
     user: str
     password: str
     database: str
@@ -27,6 +28,8 @@ class DbConfig:
 @dataclass
 class RedisConfig:
     host: str
+    port: int
+    password: str
 
 
 @dataclass
@@ -41,6 +44,7 @@ class TgBot:
 @dataclass
 class Miscellaneous:
     log_level: int
+    sentry_dsn: str | None
 
 
 @dataclass
@@ -73,15 +77,33 @@ class Config:
             bot=TgBot(**tgbot_config),
             db=DbConfig(
                 host=env.str('DB_HOST', 'postgres'),
+                port=env.int('DB_PORT', 5432),
                 user=env.str('DB_USER', 'postgres'),
-                password=env.str('DB_PASSWORD', 'postgres'),
-                database=env.str('DB_DATABASE', 'postgres'),
+                password=env.str('DB_PASS', 'postgres'),
+                database=env.str('DB_NAME', 'postgres'),
             ),
             redis=RedisConfig(
                 host=env.str('REDIS_HOST', 'localhost'),
+                port=env.str('REDIS_PORT', 6379),
+                password=env.str('REDIS_PASS'),
             ),
             misc=Miscellaneous(
                 log_level=env.log_level('LOG_LEVEL', logging.INFO),
+                sentry_dsn=env.str('SENTRY_DSN', None),
             )
         )
+
+
+def load_db_uri(path: str | None = None) -> str:
+    env = Env()
+    env.read_env(path)
+
+    db = DbConfig(
+        host=env.str('DB_HOST', 'postgres'),
+        port=env.int('DB_PORT', 5432),
+        user=env.str('DB_USER', 'postgres'),
+        password=env.str('DB_PASS', 'postgres'),
+        database=env.str('DB_NAME', 'postgres'),
+    )
+    return str(db.sqlalchemy_url)
 
