@@ -3,7 +3,7 @@ from typing import Any, Final, Optional, Pattern, Type, cast
 
 from sqlalchemy import Column, func, inspect
 from sqlalchemy.dialects.postgresql import TIMESTAMP
-from sqlalchemy.orm import DeclarativeMeta, declared_attr, has_inherited_table, registry
+from sqlalchemy.orm import DeclarativeMeta, declared_attr, has_inherited_table, registry, declarative_mixin
 from sqlalchemy.util import ImmutableProperties
 
 mapper_registry = registry()
@@ -16,7 +16,7 @@ class BaseModel(metaclass=DeclarativeMeta):
     __abstract__ = True
     __mapper_args__ = {'eager_defaults': True}
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:  # NOQA
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -54,8 +54,10 @@ class BaseModel(metaclass=DeclarativeMeta):
         return self._get_attributes()
 
 
-class TimedBaseModel(BaseModel):
-    __abstract__ = True
-
+@declarative_mixin
+class TimestampMixin:
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), default=func.now(), onupdate=func.now(), server_default=func.now())
+
+
+__all__ = ('BaseModel', 'TimestampMixin')
