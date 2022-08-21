@@ -8,24 +8,24 @@ services:
     stop_signal: SIGINT
     command: python -O bot.py
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:8443:8443"
+    expose:
+      - 8443
     env_file:
       - ".env"
     environment:
       DB_HOST: database
       REDIS_HOST: redis
-    volumes:
-      - .:/src
     depends_on:
       - database
       - redis
+    networks:
+      - botnet
 
   database:
     container_name: "${BOT_NAME}-database"
     image: postgres:14-alpine
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:${DB_PORT}:${DB_PORT}"
     restart: unless-stopped
     volumes:
       - ./pgdata:/var/lib/postgresql/data
@@ -45,14 +45,33 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+    healthcheck:
+      test: "pg_isready -d ${DB_NAME} -U ${DB_USER}"
+      interval: 3s
+      retries: 5
+      timeout: 15s
+    networks:
+      - botnet
 
   redis:
     container_name: "${BOT_NAME}-redis"
     image: redis:7-alpine
     env_file:
       - ".env"
+    command: "redis-server --requirepass ${REDIS_PASS} --port ${REDIS_PORT}"
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:${REDIS_PORT}:${REDIS_PORT}"
     volumes:
       - ./redisdata:/var/lib/redis
     restart: unless-stopped
+    healthcheck:
+      test: "[ $(redis-cli -a ${REDIS_PASS} ping) = 'PONG' ] || exit 1"
+      interval: 3s
+      retries: 5
+      timeout: 15s
+    networks:
+      - botnet
+
+networks:
+  botnet:
+    driver: bridge
