@@ -1,4 +1,4 @@
-[![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.20-blue)](https://pypi.org/project/aiogram/)
+[![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/) [![aiogram](https://img.shields.io/badge/aiogram-2.22.1-blue)](https://pypi.org/project/aiogram/)
 
 Scalable and straightforward template for bots written in [aiogram](https://github.com/aiogram/aiogram).
 
@@ -24,7 +24,7 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 
 1. Create a virtual environment: `python -m venv venv`
 2. Activate a virtual environment:
-    - You use sh or zsh: `source ./venv/bin/activate` or `. ./venv/bin/activate`
+    - You use sh or bash or zsh: `source ./venv/bin/activate` or `. ./venv/bin/activate`
     - You use fish: `source ./venv/bin/activate.fish` or `. ./venv/bin/activate.fish`
     - You use csh: `source ./venv/bin/activate.csh` or `. ./venv/bin/activate.csh`
 3. Install requirements: `pip install -r requirements.txt`
@@ -35,9 +35,8 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 1. **Note:** You need to have Docker and Docker Compose installed:
     - Arch-based distro: `sudo pacman -S docker docker-compose`
     - Debian-based distro: `sudo apt install docker docker-compose`
-2. Run command: `docker-compose up`
+2. Run command: `docker-compose up -d`
 
 #### Maintenance
 
-- Stop the exist docker-container `docker-compose down -v --remove-orphans --rmi local`
-- Rebuild containers and start bot (if you've edited some part of bot) `docker-compose up --build`
+- Stop the exist docker-container `docker-compose down`
