@@ -12,8 +12,8 @@ class DatabaseMiddleware(LifetimeControllerMiddleware):
     skip_patterns = ['error', 'update']
 
     def __init__(self, session_pool: sessionmaker) -> None:
+        super(DatabaseMiddleware, self).__init__()
         self.session_pool = session_pool
-        super().__init__()
 
     async def pre_process(self, obj: TelegramObject, data: dict, *args: Any) -> None:
         session: AsyncSession = self.session_pool()

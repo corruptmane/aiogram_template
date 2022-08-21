@@ -12,15 +12,16 @@ from aiogram.utils.exceptions import Throttled
 class ThrottlingMiddleware(BaseMiddleware):
 
     def __init__(self, limit: float = DEFAULT_RATE_LIMIT, key_prefix: str = 'antiflood_') -> None:
+        super(ThrottlingMiddleware, self).__init__()
         self.rate_limit = limit
         self.prefix = key_prefix
-        super(ThrottlingMiddleware, self).__init__()
 
     async def throttle(self, target: Union[Message, CallbackQuery]) -> NoReturn | None:
         handler = current_handler.get()
-        dispatcher = Dispatcher.get_current()
         if not handler:
             return
+
+        dispatcher = self.manager.dispatcher
         limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
         key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
 
@@ -48,8 +49,8 @@ class ThrottlingMiddleware(BaseMiddleware):
         if thr.exceeded_count == throttled.exceeded_count:
             await msg.reply('That\'s it, now we can continue the conversation')
 
-    async def on_process_message(self, message: Message, data: dict) -> None:
+    async def on_process_message(self, message: Message, data: dict) -> None:  # NOQA
         await self.throttle(message)
 
-    async def on_process_callback_query(self, call: CallbackQuery, data: dict) -> None:
+    async def on_process_callback_query(self, call: CallbackQuery, data: dict) -> None:  # NOQA
         await self.throttle(call)

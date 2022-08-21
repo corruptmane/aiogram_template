@@ -1,16 +1,20 @@
-from typing import Any
+from typing import Any, Literal
 
-from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
-from aiogram.types.base import TelegramObject
+from aiogram.dispatcher.middlewares import BaseMiddleware
 
 
-class EnvironmentMiddleware(LifetimeControllerMiddleware):
+class EnvironmentMiddleware(BaseMiddleware):
     def __init__(self, environments: dict[str, Any]) -> None:
+        super(EnvironmentMiddleware, self).__init__()
         self.environments = environments
-        super().__init__()
 
     def update_environments(self, **new_environments: dict[str, Any]) -> None:
         self.environments.update(**new_environments)
 
-    async def pre_process(self, obj: TelegramObject, data: dict[str, Any], *args: Any) -> None:
-        data.update(**self.environments, update_environments=self.update_environments)
+    async def trigger(self, action: str, *args: Any) -> Literal[True] | None:
+        if action.startswith('pre_process_'):
+            data: dict = args[-1][-1]
+            dp = self.manager.dispatcher
+            data.update(**self.environments, update_environments=self.update_environments, bot=dp.bot, dp=dp)
+            return True
+        return
