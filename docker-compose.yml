@@ -3,6 +3,7 @@ version: "3.3"
 services:
   bot:
     container_name: "${BOT_NAME}-bot"
+    image: ${BOT_IMAGE_NAME}
     build:
       context: .
     stop_signal: SIGINT
@@ -16,8 +17,10 @@ services:
       DB_HOST: database
       REDIS_HOST: redis
     depends_on:
-      - database
-      - redis
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - botnet
 
@@ -65,7 +68,7 @@ services:
       - ./redisdata:/var/lib/redis
     restart: unless-stopped
     healthcheck:
-      test: "[ $(redis-cli -a ${REDIS_PASS} ping) = 'PONG' ] || exit 1"
+      test: "[ $$(redis-cli -h redis -p ${REDIS_PORT} -a ${REDIS_PASS} ping) = 'PONG' ] || exit 1"
       interval: 3s
       retries: 5
       timeout: 15s
