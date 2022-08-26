@@ -37,6 +37,18 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
     - Debian-based distro: `sudo apt install docker docker-compose`
 2. Run command: `docker-compose up -d`
 
-#### Maintenance
+#### CI/CD
 
-- Stop the exist docker-container `docker-compose down`
+1. You need to add some secrets in your GitHub repository settings, such as:
+    - Docker Hub:
+        1. `DOCKER_LOGIN` - Login of your Docker Hub account
+        2. `DOCKER_PASSWORD` - Password of your Docker Hub account
+    - Server (SSH Credentials):
+        1. `SERVER_HOST` - IP/URL of server to which you want to deploy your bot
+        2. `SERVER_PORT` - Port opened for SSH connections on target server
+        3. `SERVER_USER` - User to which we are connecting (such as `root` or `ubuntu`)
+        4. `SERVER_KEY` - SSH Private Key used to authenticate to target server (string)
+2. Correctly set up your .env variable named `BOT_IMAGE_NAME` to something like this:
+`BOT_IMAGE_NAME=your_docker_login/repository_name:latest`
+3. Test CI/CD runs manually in Actions section of repository.
+After successful tests, you can edit `.github/workflows/cicd.yml` file to set up triggers when this pipeline would be triggered (e.g. push to master branch)
