@@ -50,5 +50,7 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
         4. `SERVER_KEY` - SSH Private Key used to authenticate to target server (string)
 2. Correctly set up your .env variable named `BOT_IMAGE_NAME` to something like this:
 `BOT_IMAGE_NAME=your_docker_login/repository_name:latest`
-3. Test CI/CD runs manually in Actions section of repository.
+3. On your server you need to have only `docker-compose.yml` and `.env` files to successfully run your project
+4. Test CI/CD runs manually in Actions section of repository.
 After successful tests, you can edit `.github/workflows/cicd.yml` file to set up triggers when this pipeline would be triggered (e.g. push to master branch)
+
