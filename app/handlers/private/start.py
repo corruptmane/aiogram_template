@@ -11,7 +11,6 @@ async def start_cmd(msg: Message, state: FSMContext, config: Config):
     admin_ids = '\n'.join(map(str, config.bot.admin_ids))
     await msg.answer(f'Hello, admin ids are:\n\n{admin_ids}')
     await state.finish()
-    a = 1 / 0
 
 
 def setup(dp: Dispatcher) -> None:
