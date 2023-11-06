@@ -16,6 +16,5 @@ __pycache__/
 # IDE
 .idea/
 
-# Other
-redisdata/
-pgdata/
+# Production config
+config/config.yml

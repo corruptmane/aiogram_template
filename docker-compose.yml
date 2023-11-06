@@ -1,0 +1,59 @@
+services:
+  bot:
+    profiles: [ "bot", "global"]
+    container_name: template.bot
+    stop_signal: SIGINT
+    image: template_bot:latest
+    command: "src.tgbot"
+    environment:
+      CONFIG_FILE_NAME: docker_config.yml
+    depends_on:
+      database_migrations:
+        condition: service_completed_successfully
+      nats_migrations:
+        condition: service_completed_successfully
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+    networks:
+      - infra.postgres
+      - infra.redis
+      - infra.nats
+      - www
+
+  database_migrations:
+    profiles: [ "migration", "global" ]
+    container_name: template.postgres_migrations
+    stop_signal: SIGINT
+    image: template_bot:latest
+    command: "alembic upgrade head"
+    environment:
+      CONFIG_FILE_NAME: docker_config.yml
+    volumes:
+      - ./config:/app/config:ro
+      - ./alembic.ini:/app/alembic.ini:ro
+    networks:
+      - infra.postgres
+
+  nats_migrations:
+    profiles: [ "migration", "global" ]
+    container_name: template.nats_migrations
+    stop_signal: SIGINT
+    image: template_bot:latest
+    command: "src.infrastructure.nats"
+    environment:
+      CONFIG_FILE_NAME: docker_config.yml
+    volumes:
+        - ./config:/app/config:ro
+    networks:
+      - infra.nats
+
+networks:
+  infra.postgres:
+    external: true
+  infra.redis:
+    external: true
+  infra.nats:
+    external: true
+  www:
+    external: true

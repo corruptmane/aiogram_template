@@ -1,0 +1,91 @@
+services:
+  redis_server:
+    container_name: local.redis.server
+    image: redis:7-alpine
+    restart: always
+    hostname: "redis.server"
+    volumes:
+      - redis.data:/data
+    command: redis-server --port $REDIS_PORT --save 20 1 --loglevel warning --requirepass $REDIS_PASS
+    ports:
+      - 127.0.0.1:6379:6379
+    healthcheck:
+      test: "[ $$(redis-cli -h redis.server -p ${REDIS_PORT} -a ${REDIS_PASS} ping) = 'PONG' ] || exit 1"
+      interval: 1s
+      retries: 15
+      timeout: 15s
+    env_file:
+      - ".env"
+    networks:
+      - infra.redis
+
+  postgres_server:
+    container_name: local.postgres.server
+    image: postgres:16-alpine
+    restart: always
+    hostname: "postgres.server"
+    volumes:
+      - postgres.data:/var/lib/postgresql/data
+    command: "postgres -c max_connections=150
+              -c shared_buffers=512MB -c effective_cache_size=1536MB
+              -c maintenance_work_mem=128MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB
+              -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200
+              -c work_mem=3495kB -c min_wal_size=1GB -c max_wal_size=4GB -c max_worker_processes=2
+              -c max_parallel_workers_per_gather=1 -c max_parallel_workers=2 -c max_parallel_maintenance_workers=1"
+    ports:
+      - 127.0.0.1:5432:5432
+    healthcheck:
+      test: "pg_isready -d ${DB_NAME} -U ${DB_USER}"
+      interval: 1s
+      retries: 15
+      timeout: 15s
+    env_file:
+      - ".env"
+    networks:
+      - infra.postgres
+    environment:
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASS
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_HOST_AUTH_METHOD: md5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  nats_server:
+    container_name: local.nats.server
+    image: nats:2.10-alpine
+    restart: always
+    hostname: "nats.server"
+    volumes:
+      - ./nats-server.conf:/etc/nats/nats-server.conf:ro
+      - nats.data:/data
+    command: nats-server --config /etc/nats/nats-server.conf
+    ports:
+      - 127.0.0.1:4222:4222
+      - 127.0.0.1:6222:6222
+      - 8222:8222
+    env_file:
+      - ".env"
+    healthcheck:
+      test: "[ $$(wget -S -O /dev/null -q localhost:8222/varz 2>&1 | awk '/HTTP/{print $2}') = '200' ] || exit 1"
+      interval: 1s
+      retries: 15
+      timeout: 15s
+    networks:
+      - infra.nats
+
+volumes:
+  redis.data: {}
+  postgres.data: {}
+  nats.data: {}
+
+networks:
+  infra.postgres:
+    external: true
+  infra.redis:
+    external: true
+  infra.nats:
+    external: true

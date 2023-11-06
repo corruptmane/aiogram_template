@@ -1,0 +1,20 @@
+bot:
+  token: 6346345345:239u34nti43b56u345y35g324b5jh34
+  storage_type: memory
+  skip_updates: true
+db:
+  host: localhost
+  port: 5432
+  login: postgres
+  password: postgres
+  name: postgres
+redis:
+  host: localhost
+  port: 6379
+  db: 1
+  password: redis
+nats:
+  servers:
+    - "nats://localhost:4222"
+logging:
+  level: INFO
