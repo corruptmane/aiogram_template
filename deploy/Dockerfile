@@ -16,13 +16,15 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
 FROM python-base as builder-base
 RUN apt-get update \
- && apt-get install -y gcc git
+ && apt-get install -y gcc git curl
 
 WORKDIR $PYSETUP_PATH
 COPY ./pyproject.toml .
 RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir setuptools wheel \
- && pip install --no-cache-dir poetry
+ && pip install --no-cache-dir setuptools wheel poetry maturin \
+ && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+
+ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN poetry install --only main
 
