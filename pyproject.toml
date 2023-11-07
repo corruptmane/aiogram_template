@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "aiogram-template"
+name = "aiogram_template"
 version = "0.1.0"
-description = "Telegram Bot Template written in aiogram"
+description = "Telegram Bot Template written with aiogram"
 authors = ["corruptmane <corruptmane@gmail.com>"]
 license = "MIT"
 readme = "README.md"
