@@ -28,4 +28,5 @@ Scalable and straightforward template for bots written in [aiogram](https://gith
 #### Docker Deployment
 
 1. Deploy your infrastructure (Redis, PostgreSQL, etc.). Example `infra.docker-compose.yml` file is in `deploy` directory
-2. Run command: `docker-compose up -d`
+2. Build docker image: `docker build -f deploy/Dockerfile -t template_bot:latest .`
+3. Run command: `docker-compose up -d`
