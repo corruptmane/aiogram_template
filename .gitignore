@@ -18,3 +18,4 @@ __pycache__/
 
 # Production config
 config/config.yml
+config/docker_config.yml
